@@ -1,0 +1,30 @@
+{
+  "asar": true,
+  "extraResources": [
+  ],
+  "directories": {
+    "output": "release"
+  },
+  "files": ["dist-electron", "dist-frontend", "dist-backend"],
+  "mac": {
+    "artifactName": "${productName}_${version}.${ext}",
+    "target": [
+      "dmg"
+    ]
+  },
+  "win": {
+    "icon": "dist/favicon.ico",
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ]
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "deleteAppDataOnUninstall": true
+  }
+}

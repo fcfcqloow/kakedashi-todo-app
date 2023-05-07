@@ -1,0 +1,16 @@
+{
+  "name": "go-backend",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "gen": "go generate",
+    "preinstall": "go mod tidy",
+    "dev": "yarn preinstall && LOG_LEVEL=debug go run main_gin_server.go",
+    "clean": "node ./scripts/rmdir.js dist",
+    "build:mac": "GOOS=darwin GOARCH=amd64 go build -o dist/go-server main_gin_server.go",
+    "build:win": "GOOS=windows GOARCH=amd64 go build -o dist/go-server.exe main_gin_server.go",
+    "build:wasm": "GOOS=js GOARCH=wasm go build -o dist/main.wasm main_wasm_lib.go",
+    "build": "yarn preinstall && yarn build:mac && yarn build:win",
+    "test": "go test -v ./..."
+  }
+}

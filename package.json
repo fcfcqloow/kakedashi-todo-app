@@ -1,0 +1,27 @@
+{
+    "name": "todo-app",
+    "version": "0.0.1",
+    "private": "true",
+    "workspaces": [
+        "backend",
+        "frontend"
+    ],
+    "scripts": {
+        "preinstall"         : "yarn --cwd ./gui install",
+        "clean"              : "node ./scripts/rmdir.js ./dist",
+        "copy:gui-dist"      : "node ./scripts/copydir.js ./gui/release ./dist/gui",
+        "copy:backend-dist"  : "node ./scripts/copydir.js ./backend/dist ./dist/server",
+        "copy:frontend-dist" : "node ./scripts/copydir.js ./frontend/dist ./dist/frontend",
+        "copy"               : "run-p copy:gui-dist copy:backend-dist copy:frontend-dist",
+        "build:gui"          : "yarn --cwd ./gui build && yarn copy:gui-dist",
+        "build:backend"      : "FRONTEND_DIST_DIR='../dist/frontend' yarn workspace go-backend gen && yarn workspace go-backend build && yarn copy:backend-dist",
+        "build:frontend"     : "yarn workspace frontend build && yarn copy:frontend-dist",
+        "build"              : "run-s  clean build:frontend build:backend build:gui",
+        "dev:backend"        : "yarn workspace go-backend dev",
+        "dev:frontend"       : "yarn workspace frontend dev",
+        "dev"                : "run-p dev:backend dev:frontend"
+    },
+    "devDependencies": {
+        "npm-run-all": "^4.1.5"
+    }
+}
