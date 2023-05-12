@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { Settings } from '@/core/Settings';
 import { copyObjectKV } from '@/util/object';
+import { emptyFunc } from '@/util/func';
 
 export const useAppStore = defineStore('app', {
   state: () => {
@@ -10,18 +11,31 @@ export const useAppStore = defineStore('app', {
         value  : '',
         color  : '',
       },
-      isGlobalLoading: false,
-      settings : <Settings>{
-        mode                    : 'dark',
-        taskLimit               : 1000,
-        sortable                : true,
-        topicColorFlag          : true,
-        notificationIntervalSec : 30,
-        topicListType           : 'list',
+      confirm : {
+        isShow : false,
+        title  : 'Confirm',
+        ok     : emptyFunc,
+        cancel : emptyFunc,
+      },
+      isGlobalLoading : false,
+      settings        : <Settings>{},
+      calenderDialog  : {
+        initDate     : new Date(),
+        isShow       : false,
+        dateCallback : (date: Date) => {},
       },
     }
   },
   actions : {
+    showCalender (initDate?: Date, dateCallback?: (date: Date) => void) {
+      initDate && (this.calenderDialog.initDate = new Date(initDate));
+      dateCallback && (this.calenderDialog.dateCallback = dateCallback);
+      this.calenderDialog.isShow = true;
+    },
+    closeCalender () {
+      this.calenderDialog.isShow = false;
+      this.calenderDialog.dateCallback = emptyFunc;
+    },
     showSnackbar (text: string, color?: string) {
       this.snackbar.value = text;
       this.snackbar.isShow = true;
@@ -31,6 +45,18 @@ export const useAppStore = defineStore('app', {
       this.snackbar.isShow = false;
       this.snackbar.value  = '';
       this.snackbar.color = '';
+    },
+    showConfirmDialog (args: { title: string, ok?: () => void; cancel?: () => void; }) {
+      this.confirm.isShow = true;
+      this.confirm.title = args.title;
+      this.confirm.ok = args.ok ?? emptyFunc;
+      this.confirm.cancel = args.cancel ?? emptyFunc;
+    },
+    closeConfirmDialog() {
+      this.confirm.isShow = false;
+      setTimeout(() => this.confirm.title = 'Confirm', 150);
+      this.confirm.ok = emptyFunc;
+      this.confirm.cancel = emptyFunc;
     },
     setGlobalLoading (value: boolean) {
       this.isGlobalLoading = value;

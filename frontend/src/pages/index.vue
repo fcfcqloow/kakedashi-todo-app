@@ -5,6 +5,8 @@ import TaskBoard from '@/components/organisms/task/TaskBoard.vue';
 import TaskAddDialog from '@/components/organisms/task/TaskAddDialog.vue';
 import TaskSortButton from '@/components/organisms/task/header/TaskSortButton.vue';
 import TaskAddButton from '@/components/organisms/task/header/TaskAddButton.vue';
+import TaskTopicFilterButton from '@/components/organisms/task/header/TaskTopicFilterButton.vue';
+import TaskTitleSearchButton from '@/components/organisms/task/header/TaskTitleSearchButton.vue';
 import MainTemplate from '@/components/template/MainTemplate.vue';
 
 import { IHandshakeRepository, ITodoRepository, ITopicRepository } from '@/core/IF/repository';
@@ -13,8 +15,7 @@ import { Tasks } from '@/core/Tasks';
 import { Topic } from '@/core/Topic';
 import { Color } from '@/core/Color';
 import { useAppStore } from '@/stores/app';
-import TaskTopicFilter from '@/components/organisms/task/header/TaskTopicFilter.vue';
-import TaskTitleSearch from '@/components/organisms/task/header/TaskTitleSearch.vue';
+import TaskRestoreButton from '@/components/organisms/task/header/TaskRestoreButton.vue';
 
 const { subscribeGlobalLoadingPromise, showSnackbar, settings } = useAppStore();
 const app = getCurrentInstance();
@@ -45,7 +46,7 @@ const taskJob = {
       taskJob.syncTasks,
     ),
   syncTasks   : () => $taskRepository?.get({ limit : settings.taskLimit }).then((response: Tasks) => tasks.value = response),
-  sort         : (task: Task) =>
+  sort        : (task: Task) =>
     taskJob.loadingWrap($taskRepository?.sort(), { errorMsg : 'failed to add task' }),
   add         : (task: Task) =>
     taskJob.loadingWrap($taskRepository?.add(task).then(() => $handshakeRepository.sendTaskLog(task, 'add')), { errorMsg : 'failed to add task' }),
@@ -54,7 +55,9 @@ const taskJob = {
   remove      : (task: Task) => 
     taskJob.loadingWrap($taskRepository?.remove(task).then(() => $handshakeRepository.sendTaskLog(task, 'remove')), { errorMsg : 'failed to remove task' }),
   move        : (from: string, to: string, index: number, task: Task) =>
-    taskJob.loadingWrap($taskRepository?.move(from, to, index, task).then(() => $handshakeRepository.sendTaskLog(task, to === 'done' ? 'done' : 'move')), { errorMsg : 'failed to move task' }),
+    taskJob.loadingWrap($taskRepository?.move(from, to, index, task).then(() => $handshakeRepository.sendTaskLog(task, to)), { errorMsg : 'failed to move task' }),
+  restore     : () =>
+    taskJob.loadingWrap($taskRepository?.restore(), { errorMsg : 'panic!!!!! restore!!!' }),
 };
 
 onMounted(() => {
@@ -78,8 +81,9 @@ onMounted(() => {
   <main-template title="TODO List">
     <template #header>
       <v-spacer />
-      <task-title-search v-model:search="search" />
-      <task-topic-filter v-model:filter-topics="filterTopics" :topics="topics" />
+      <task-restore-button @click="taskJob.restore" />
+      <task-title-search-button v-model:search="search" />
+      <task-topic-filter-button v-model:filter-topics="filterTopics" :topics="topics" />
       <task-sort-button @click="taskJob.sort" />
       <task-add-button @click="isOpenAddDialog = true" />
     </template>

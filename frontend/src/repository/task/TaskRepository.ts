@@ -21,9 +21,6 @@ export class TaskRepository implements ITodoRepository  {
     this.baseURL = baseURL;  
   }
 
-  async sort() {
-    await axios.patch(`${this.baseURL}/todo/sort`)
-  }
   async get(options?: { limit?: number, offset?: number, target?: string }): Promise<Tasks> {
     const axiosResponse = await axios.get(`${this.baseURL}/todo`, {
       params : {
@@ -42,10 +39,12 @@ export class TaskRepository implements ITodoRepository  {
     }));
   }
 
+  async sort() {
+    await axios.patch(`${this.baseURL}/todo/sort`)
+  }
   async update(task: Task): Promise<void> {
     await axios.patch(`${this.baseURL}/todo`, <TaskPatchRequest>fe2BeTask(task))
   }
-
   async add(task: Task): Promise<void> {
     await axios.put(`${this.baseURL}/todo`, <TaskAddRequest>fe2BeTask(task))
   }
@@ -62,6 +61,9 @@ export class TaskRepository implements ITodoRepository  {
       index,
       task : fe2BeTask(task),
     });
+  }
+  async restore() {
+    await axios.post(`${this.baseURL}/todo/restore/done`);
   }
 };
 

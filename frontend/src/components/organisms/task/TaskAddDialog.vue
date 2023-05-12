@@ -39,6 +39,9 @@ const shortcut = (event: KeyboardEvent) => {
         }
         emits('create:task', newTask.value);
         copyObjectKV(newTask.value, Task.createEmptyTask());
+        setTimeout(() => {
+          newTask.value.value = ""
+        }, 0);
       
         return;
     }
@@ -55,10 +58,12 @@ const shortcut = (event: KeyboardEvent) => {
   >
     <task-card
       v-model="newTask"
-      style="width: 50vw; height: 30vh;"
       is-create-panel
+      :text-area-rows="100"
+      style="width: 50vw; height: 60vh;"
     >
       <template #bottom>
+        priority
         <radio-buttons
           :model-value="newTask.priority ?? 0"
           @update:model-value="newTask.priority = $event"
@@ -66,6 +71,7 @@ const shortcut = (event: KeyboardEvent) => {
           radio-custom-style="padding-left: 9px"
           :labels="[0, 1, 2, 3, 4]"
         />
+        topic
         <topic-selector
           v-model:selected="newTopics"
           :topics="props.topics"

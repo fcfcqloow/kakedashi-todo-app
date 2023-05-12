@@ -1,13 +1,17 @@
 <script lang="ts" setup>
 import { ref, watch, reactive } from 'vue';
-import type { Task } from '@/core/Task';
+import { Task } from '@/core/Task';
+import { useAppStore } from '@/stores/app';
+import { getFontColor } from '@/core/Color';
 
 type Props = {
   modelValue: Task;
   isCreatePanel?: boolean;
   isDeletable?: boolean;
   color?: string;
+  textAreaRows?: number;
 };
+
 type Emit = {
   (e: 'delete'): void;
   (e: 'apply', task: Task): void;
@@ -24,11 +28,19 @@ const colorMap = [
 
 const props = defineProps<Props>();
 const emits = defineEmits<Emit>();
+const { showCalender } = useAppStore();
 
 const isEdited = ref(false);
 const beforeValue = ref('');
 const task = reactive(props.modelValue);
 
+const clickDate = () => {
+  const callback = (date: Date) => {
+    task.deadLine = date;
+    emits('apply', task);
+  };
+  showCalender(task.deadLine, callback);
+};
 // 編集内容を管理するWatch
 watch(() => task.value, (newValue, oldValue) => {
   // 変更前と同じ内容なら編集中ではない
@@ -49,7 +61,6 @@ watch(() => task.value, (newValue, oldValue) => {
 <template>
   <v-card
     :color="props.color"
-    min-height="10vh"
     elevation="3"
     style="overflow: visible; font-size: 1vh; position: relative; z-index 5;"
   >
@@ -61,30 +72,30 @@ watch(() => task.value, (newValue, oldValue) => {
       style="position: absolute; right: -10px; top: -10px;"
       @click="emits('delete')"
     />
+
     <v-badge
       class="priority"
       :color="colorMap[Number(task.priority)]"
       :content="task.priority"
       inline
     />
-    <vue-date-picker v-if="task.deadLine" v-model="task.deadLine" @closed="emits('apply', task)">
-      <template #trigger>
-        <h1>
-          {{ task.deadLine ? `${task.deadLine?.toLocaleDateString()} ${task?.deadLine?.toLocaleTimeString()}` : 'NONE' }}
-        </h1>
-        </template>
-    </vue-date-picker>
 
-    <div
-      style="max-height: 40vh; overflow: scroll;"
+    <div @click="clickDate" 
+      :style="`
+        color: ${props.color && getFontColor(props.color)};
+        font-size: 15px;
+      `"
     >
-      <v-textarea
-        :model-value="task.value"
-        @update:model-value="task.value = $event"
-        auto-grow
-        rows="0"
-      />
+      {{ props.modelValue.deadLine?.toLocaleString() }}
     </div>
+
+    <v-textarea
+      :model-value="task.value"
+      :style="`overflow: scroll; color: ${props.color && getFontColor(props.color)}` "
+      auto-grow
+      :rows="`${props.textAreaRows ?? 0}`"
+      @update:model-value="task.value = $event"
+    />
 
     <v-row justify="space-between" v-if="isEdited && !props.isCreatePanel">
       <v-col>
@@ -114,7 +125,7 @@ watch(() => task.value, (newValue, oldValue) => {
 </template>
 
 
-<style scoped>
+<style>
 .date-picker {
   position: absolute;
   overflow: visible;

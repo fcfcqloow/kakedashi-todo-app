@@ -4,13 +4,14 @@ import { Tasks } from "../Tasks";
 import { Topic } from '../Topic';
 
 export type ITodoRepository = {
-  add    : (task: Task) => Promise<void>;
-  remove : (task: Task) => Promise<void>;
-  update : (task: Task) => Promise<void>;
-  done   : (task: Task) => Promise<void>;
-  get    : (options?: { limit?: number, offset?: number, target?: string }) =>  Promise<Tasks>;
-  move   : (from: string, to: string, index: number, task: Task) => Promise<void>;
-  sort   : () => Promise<void>;
+  add     : (task: Task) => Promise<void>;
+  remove  : (task: Task) => Promise<void>;
+  update  : (task: Task) => Promise<void>;
+  done    : (task: Task) => Promise<void>;
+  get     : (options?: { limit?: number, offset?: number, target?: string }) =>  Promise<Tasks>;
+  move    : (from: string, to: string, index: number, task: Task) => Promise<void>;
+  sort    : () => Promise<void>;
+  restore : () => Promise<void>;
 };
 
 
@@ -28,12 +29,12 @@ export type ISettingsRepository = {
 };
 
 export type IHandshakeRepository = {
-  sendTaskLog: (task: Task, operation: 'move'|'add'|'remove'|'update'|'done') => void;
+  sendTaskLog: (task: Task, operation: string) => void;
 };
 
 
 export type ILogsRepository = {
   get      : (date: string) => Promise<string[]>;
-  listDate : () => Promise<string[]>;
+  listDate : (args?: { year?: string, month?: string}) => Promise<string[]>;
 };
 

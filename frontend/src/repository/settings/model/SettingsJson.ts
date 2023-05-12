@@ -5,4 +5,6 @@ export type SettingsJson = {
   mode: 'dark'| 'white';
   topicListType: 'list' | 'icon';
   notificationIntervalSec: number;
+  myColor: string;
+  stopNotification: boolean;
 };

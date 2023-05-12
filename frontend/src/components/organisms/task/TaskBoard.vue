@@ -141,9 +141,9 @@ const overLine = (event: any) => {
         >
           <v-card
             class="mx-auto pa-2 transparent"
-            :height="props.height"
-            min-height="100px"
             style="overflow: scroll;"
+            min-height="100px"
+            :height="props.height"
           >
             <task-topic-editor
               v-if="editingTopic"

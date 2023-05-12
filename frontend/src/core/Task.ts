@@ -30,7 +30,7 @@ export class Task {
       value    : '',
       deadLine : new Date(),
       created  : new Date(),
-      topics  : [],
+      topics   : [],
     });
   }
 

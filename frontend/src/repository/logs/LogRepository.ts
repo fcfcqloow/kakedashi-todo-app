@@ -12,8 +12,14 @@ export class LogsRepository implements ILogsRepository {
    return Promise.resolve(response.data);
   }
 
-  async listDate(): Promise<string[]> {
-    const response = (await axios.get(`${this.baseURL}/logs`));
+  async listDate(args?: { year?: string, month?: string }): Promise<string[]> {
+    const response = (await axios.get(`${this.baseURL}/logs`, {
+      params : {
+        year  : args?.year || undefined,
+        month : args?.month || undefined,
+      },
+    }));
+
     return Promise.resolve(response.data);
   }
 }

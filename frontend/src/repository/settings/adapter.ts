@@ -5,6 +5,8 @@ export const toFeSettings = (settingJson: SettingsJson): Settings => new Setting
   ...settingJson,
   topicColorFlag          : settingJson.topicColor,
   notificationIntervalSec : settingJson.notificationIntervalSec,
+  myColor                 : settingJson.myColor,
+  stopNotification        : settingJson.stopNotification,
 });
 
 export const toBeSettings = (settings: Settings): SettingsJson => ({
@@ -14,4 +16,6 @@ export const toBeSettings = (settings: Settings): SettingsJson => ({
   mode                    : settings.mode,
   topicListType           : settings.topicListType,
   notificationIntervalSec : settings.notificationIntervalSec,
+  myColor                 : settings.myColor,
+  stopNotification        : settings.stopNotification,
 });
