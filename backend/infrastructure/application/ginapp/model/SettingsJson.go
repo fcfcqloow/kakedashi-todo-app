@@ -7,4 +7,6 @@ type SettingsJson struct {
 	Mode                    string `json:"mode"`
 	TopicListType           string `json:"topicListType"`
 	NotificationIntervalSec int    `json:"notificationIntervalSec"`
+	MyColor                 string `json:"myColor"`
+	StopNotification        bool   `json:"stopNotification"`
 }

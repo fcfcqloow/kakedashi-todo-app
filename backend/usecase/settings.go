@@ -23,7 +23,7 @@ func NewSettingsUseCase(repository SettingsRepository) SettingsUseCase {
 }
 
 func (s *settingsUseCase) GetSettings() (domain.Settings, error) {
-	settings, err := s.repository.Get()
+	settings, err := s.repository.GetSettings()
 	if err != nil {
 		return domain.Settings{}, fmt.Errorf("failed to get settings: %w", err)
 	}
@@ -32,7 +32,7 @@ func (s *settingsUseCase) GetSettings() (domain.Settings, error) {
 }
 
 func (s *settingsUseCase) UpdateSettings(settings domain.Settings) (domain.Settings, error) {
-	err := s.repository.Sync(settings)
+	err := s.repository.SyncSettings(settings)
 	if err != nil {
 		return domain.Settings{}, fmt.Errorf("failed to update settings: %w", err)
 	}

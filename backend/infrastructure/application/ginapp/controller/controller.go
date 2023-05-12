@@ -19,6 +19,7 @@ type (
 		topicUseCase    usecase.TopicUseCase
 		settingsUseCase usecase.SettingsUseCase
 		logUseCase      usecase.LogUseCase
+		memoUseCase     usecase.MemoUseCase
 	}
 )
 
@@ -27,12 +28,14 @@ func NewController(
 	topicUseCase usecase.TopicUseCase,
 	settingsUseCase usecase.SettingsUseCase,
 	logUseCase usecase.LogUseCase,
+	memoUseCase usecase.MemoUseCase,
 ) *controller {
 	return &controller{
 		taskUseCase:     taskUseCase,
 		topicUseCase:    topicUseCase,
 		settingsUseCase: settingsUseCase,
 		logUseCase:      logUseCase,
+		memoUseCase:     memoUseCase,
 	}
 }
 
@@ -256,7 +259,7 @@ func (c *controller) Log(ctx *gin.Context) {
 
 func (c *controller) GetLogs(ctx *gin.Context) {
 	date := ctx.Param("date")
-	logs, err := c.logUseCase.List(usecase.Date(date))
+	logs, err := c.logUseCase.List(domain.Date(date))
 	if err != nil {
 		ctx.Errors = append(ctx.Errors, ctx.Error(err))
 		return
@@ -266,7 +269,15 @@ func (c *controller) GetLogs(ctx *gin.Context) {
 }
 
 func (c *controller) GetDates(ctx *gin.Context) {
-	dates, err := c.logUseCase.ListDate()
+	var (
+		year  = ctx.Query("year")
+		month = ctx.Query("month")
+	)
+
+	dates, err := c.logUseCase.ListDate(
+		usecase.LogYear(cnv.SafeInt(year, 0)),
+		usecase.LogMonth(cnv.SafeInt(month, 0)),
+	)
 	if err != nil {
 		ctx.Errors = append(ctx.Errors, ctx.Error(err))
 		return
@@ -288,4 +299,39 @@ func (c *controller) GetSummary(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, feSummary(*summary))
+}
+
+func (c *controller) GetMemo(ctx *gin.Context) {
+	memo, err := c.memoUseCase.GetMemo()
+	if err != nil {
+		ctx.Errors = append(ctx.Errors, ctx.Error(err))
+		return
+	}
+
+	ctx.String(http.StatusOK, memo)
+}
+
+func (c *controller) UpdateMemo(ctx *gin.Context) {
+	byts, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		ctx.Errors = append(ctx.Errors, ctx.Error(err))
+		return
+	}
+
+	_, err = c.memoUseCase.UpdateMemo(string(byts))
+	if err != nil {
+		ctx.Errors = append(ctx.Errors, ctx.Error(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, model.GeneralMapResponse{"message": "OK"})
+}
+
+func (c *controller) RestoreDone(ctx *gin.Context) {
+	if _, err := c.taskUseCase.RestoreDone(); err != nil {
+		ctx.Errors = append(ctx.Errors, ctx.Error(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, model.GeneralMapResponse{"message": "OK"})
 }

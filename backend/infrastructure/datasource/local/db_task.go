@@ -4,7 +4,6 @@ import (
 	"sync"
 
 	"github.com/fcfcqloow/first-todo-list/backend/domain"
-	"github.com/fcfcqloow/first-todo-list/backend/usecase"
 )
 
 var (
@@ -12,21 +11,8 @@ var (
 	cacheKey = "tasks"
 )
 
-type (
-	db struct {
-		localTaskPath string
-	}
-)
-
-func NewTodoRepository(localTaskPath string) usecase.TodoRepository {
-	instance := &db{
-		localTaskPath: localTaskPath,
-	}
-	return instance
-}
-
-func (d *db) List() (*domain.Tasks, error) {
-	tasks, err := load[domain.Tasks](d.localTaskPath, cacheKey)
+func (d *localRepository) ListTasks() (*domain.Tasks, error) {
+	tasks, err := load[domain.Tasks](TodoDbFile, cacheKey)
 	if err != nil {
 		return nil, err
 	}
@@ -34,8 +20,8 @@ func (d *db) List() (*domain.Tasks, error) {
 	return tasks, nil
 }
 
-func (d *db) Sync(tasks domain.Tasks) error {
-	if err := save(d.localTaskPath, tasks, cacheKey); err != nil {
+func (d *localRepository) SyncTasks(tasks domain.Tasks) error {
+	if err := save(TodoDbFile, tasks, cacheKey); err != nil {
 		return err
 	}
 

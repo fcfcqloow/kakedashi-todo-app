@@ -6,20 +6,27 @@ import (
 
 type (
 	TodoRepository interface {
-		List() (*domain.Tasks, error)
-		Sync(domain.Tasks) error
+		ListTasks() (*domain.Tasks, error)
+		SyncTasks(domain.Tasks) error
 	}
 	TopicRepository interface {
-		List() ([]domain.Topic, error)
-		Sync([]domain.Topic) error
+		ListTopics() ([]domain.Topic, error)
+		SyncTopics([]domain.Topic) error
 	}
 	SettingsRepository interface {
-		Get() (domain.Settings, error)
-		Sync(domain.Settings) error
+		GetSettings() (domain.Settings, error)
+		SyncSettings(domain.Settings) error
 	}
 	LogRepository interface {
-		Get(dateName Date) ([]Log, error)
-		Sync(dateName Date, logs []Log) error
-		ListDate() ([]Date, error)
+		GetLogs(dateName domain.Date) ([]domain.Log, error)
+		SyncLogs(dateName domain.Date, logs []domain.Log) error
+		ListDate() ([]domain.Date, error)
+	}
+	RestoreRepository interface {
+		Restore([]domain.Task) error
+	}
+	MemoRepository interface {
+		GetMemo() (string, error)
+		SyncMemo(string) error
 	}
 )

@@ -60,7 +60,7 @@ func (tasks *Tasks) SortPriority() error {
 	})
 
 	sort.SliceStable(tasks.Todo, func(i, j int) bool {
-		return tasks.Todo[i].DeadLine/(1000*60*60*8) < tasks.Todo[j].DeadLine/(1000*60*60*8)
+		return tasks.Todo[i].DeadLine/(1000*60*60) < tasks.Todo[j].DeadLine/(1000*60*60)
 	})
 
 	return nil
@@ -104,11 +104,12 @@ func (tasks *Tasks) MoveTask(from, to PickKey, index int, task Task) error {
 			return nil
 		}
 
-		if len(*toList) <= index {
-			return &domainerr.ListOverError{}
+		if index < 0 || len(*toList) <= index {
+			*toList = append(*toList, task)
+		} else {
+			*toList = insert(*toList, index, task)
 		}
 
-		*toList = insert(*toList, index, task)
 		return nil
 	}
 

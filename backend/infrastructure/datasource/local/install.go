@@ -17,9 +17,11 @@ var (
 	DataDir               = filepath.Join(AppDir, "data")
 	LogDir                = filepath.Join(AppDir, "log")
 	BackupDir             = filepath.Join(DataDir, "backup")
+	RestoreDir            = filepath.Join(DataDir, "restore")
 	TodoDbFile            = filepath.Join(DataDir, "todo.db")
 	TopicDbFile           = filepath.Join(DataDir, "topic.db")
 	SettingDbFile         = filepath.Join(DataDir, "settings.db")
+	MemoFile              = filepath.Join(DataDir, "memo.db")
 )
 
 func Install() error {
@@ -32,6 +34,7 @@ func Install() error {
 	safeMkdir(DataDir, os.ModePerm)
 	safeMkdir(BackupDir, os.ModePerm)
 	safeMkdir(LogDir, os.ModePerm)
+	safeMkdir(RestoreDir, os.ModePerm)
 	safeCreateFile(TodoDbFile, ptrString("{}"))
 	safeCreateFile(TopicDbFile, ptrString("[]"))
 	safeCreateFile(SettingDbFile, ptrString("{}"))

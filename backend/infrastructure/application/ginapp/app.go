@@ -16,6 +16,7 @@ func Run(
 	topicUseCase usecase.TopicUseCase,
 	settingsUseCase usecase.SettingsUseCase,
 	logUseCase usecase.LogUseCase,
+	memoUseCase usecase.MemoUseCase,
 	htmlIndexDir string,
 	port int,
 ) {
@@ -25,6 +26,7 @@ func Run(
 		topicUseCase,
 		settingsUseCase,
 		logUseCase,
+		memoUseCase,
 	)
 
 	{
@@ -43,6 +45,7 @@ func Run(
 			DELETE("/todo", todoController.RemoveTodo).
 			PUT("/todo", todoController.AddTodo).
 			POST("/todo", todoController.MoveTodo).
+			POST("/todo/restore/done", todoController.RestoreDone).
 			// Topic Controller
 			GET("/topic", todoController.ListTopics).
 			PUT("/topic", todoController.AddTopic).
@@ -54,6 +57,8 @@ func Run(
 			GET("/summary", todoController.GetLogs).
 			GET("/logs", todoController.GetDates).
 			GET("/logs/:date", todoController.GetLogs).
+			GET("/memo", todoController.GetMemo).
+			PATCH("/memo/", todoController.UpdateMemo).
 			// Websocket Controller
 			GET("/ws", controller.WebsocketHandle(map[string]gin.HandlerFunc{
 				"log": todoController.Log,

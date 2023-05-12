@@ -2,23 +2,12 @@ package ldb
 
 import (
 	"github.com/fcfcqloow/first-todo-list/backend/domain"
-	"github.com/fcfcqloow/first-todo-list/backend/usecase"
 )
 
 var settingsCacheKey = "settings-cache-key"
 
-type settingsDB struct {
-	localPath string
-}
-
-func NewSettingsRepository(localPath string) usecase.SettingsRepository {
-	return &settingsDB{
-		localPath: localPath,
-	}
-}
-
-func (t *settingsDB) Get() (domain.Settings, error) {
-	settings, err := load[domain.Settings](t.localPath, settingsCacheKey)
+func (t *localRepository) GetSettings() (domain.Settings, error) {
+	settings, err := load[domain.Settings](SettingDbFile, settingsCacheKey)
 	if err != nil {
 		return domain.Settings{}, err
 	}
@@ -26,8 +15,8 @@ func (t *settingsDB) Get() (domain.Settings, error) {
 	return *settings, nil
 }
 
-func (t *settingsDB) Sync(settings domain.Settings) error {
-	if err := save(t.localPath, settings, settingsCacheKey); err != nil {
+func (t *localRepository) SyncSettings(settings domain.Settings) error {
+	if err := save(SettingDbFile, settings, settingsCacheKey); err != nil {
 		return err
 	}
 

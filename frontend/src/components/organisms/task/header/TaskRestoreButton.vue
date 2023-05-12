@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useAppStore } from '@/stores/app';
-import SortButton from '@/components/atoms/SortButton.vue';
+import RestoreButton from '@/components/atoms/RestoreButton.vue';
 
 type Props = {
 };
@@ -16,16 +16,18 @@ const emits = defineEmits<Emit>();
 <template>
    <v-tooltip
     v-if="settings.sortable"
-    text="Sort Todo (Deadline + Priority)"
+    text="Delete and Save"
     location="bottom"
   >
     <template v-slot:activator="{ props }">
-      <sort-button 
+      <restore-button
         v-bind="props"
         size="small"
-        @click="showConfirmDialog({ title : 'Sort Todo List?', ok : () => emits('click') }); "
-        :background-color="settings.mode === 'dark' ? 'black' : 'white'"
-        :style="`margin: 10px;`"
+        :style="`
+          margin: 10px;
+          background-color: ${settings.mode === 'dark' ? 'black' : 'white'};
+        `"
+        @click="showConfirmDialog({ title : 'Delete and Save for Done?', ok : () => emits('click') }); "
       />
     </template>
   </v-tooltip>

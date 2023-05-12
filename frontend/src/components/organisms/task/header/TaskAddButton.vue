@@ -15,16 +15,16 @@ const emits = defineEmits<Emit>();
 </script>
 <template>
   <v-tooltip
-    text="Shift + N"
+    text="Create(Shift+N)"
     location="bottom"
   >
     <template v-slot:activator="{ props }">
       <plus-button
         v-bind="props"
         size="small"
-        @click="emits('click')"
         :background-color="settings.mode === 'dark' ? 'black' : 'white'"
         :style="`margin: 10px;`"
+        @click="emits('click')"
       />
     </template>
   </v-tooltip>

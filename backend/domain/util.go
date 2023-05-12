@@ -42,3 +42,14 @@ func findIndex[T any](s []T, find func(T) bool) int {
 	}
 	return -1
 }
+
+func filter[T any](items []T, hofunc func(T) bool) []T {
+	var result []T
+	for _, item := range items {
+		if hofunc(item) {
+			result = append(result, item)
+		}
+	}
+
+	return result
+}

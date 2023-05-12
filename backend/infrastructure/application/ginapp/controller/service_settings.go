@@ -13,6 +13,8 @@ func feSettingsResponse(settings domain.Settings) model.SettingsGetResponse {
 		Mode:                    settings.Mode,
 		TopicListType:           settings.TopicListType,
 		NotificationIntervalSec: settings.NotificationIntervalSec,
+		MyColor:                 settings.MyColor,
+		StopNotification:        settings.StopNotification,
 	}
 }
 
@@ -24,5 +26,7 @@ func domainSettings(settingsJson model.SettingsUpdateRequest) domain.Settings {
 		Mode:                    settingsJson.Mode,
 		TopicListType:           settingsJson.TopicListType,
 		NotificationIntervalSec: settingsJson.NotificationIntervalSec,
+		MyColor:                 settingsJson.MyColor,
+		StopNotification:        settingsJson.StopNotification,
 	}
 }

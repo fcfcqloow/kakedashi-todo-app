@@ -2,23 +2,12 @@ package ldb
 
 import (
 	"github.com/fcfcqloow/first-todo-list/backend/domain"
-	"github.com/fcfcqloow/first-todo-list/backend/usecase"
 )
 
 var topicCacheKey = "topic-cache-key"
 
-type topicDB struct {
-	localTopicPath string
-}
-
-func NewTopicRepository(localTopicPath string) usecase.TopicRepository {
-	return &topicDB{
-		localTopicPath: localTopicPath,
-	}
-}
-
-func (t *topicDB) List() ([]domain.Topic, error) {
-	topics, err := load[[]domain.Topic](t.localTopicPath, topicCacheKey)
+func (t *localRepository) ListTopics() ([]domain.Topic, error) {
+	topics, err := load[[]domain.Topic](TopicDbFile, topicCacheKey)
 	if err != nil {
 		return nil, err
 	}
@@ -26,8 +15,8 @@ func (t *topicDB) List() ([]domain.Topic, error) {
 	return *topics, nil
 }
 
-func (t *topicDB) Sync(topics []domain.Topic) error {
-	if err := save(t.localTopicPath, topics, topicCacheKey); err != nil {
+func (t *localRepository) SyncTopics(topics []domain.Topic) error {
+	if err := save(TopicDbFile, topics, topicCacheKey); err != nil {
 		return err
 	}
 

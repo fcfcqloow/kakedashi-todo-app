@@ -8,5 +8,7 @@ type (
 		Mode                    string
 		TopicListType           string
 		NotificationIntervalSec int
+		MyColor                 string
+		StopNotification        bool
 	}
 )

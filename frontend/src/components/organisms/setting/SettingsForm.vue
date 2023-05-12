@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { Color } from '@/core/Color';
 import { Settings } from '@/core/Settings';
 import RadioButtons from '@/components/atoms/RadioButtons.vue';
-import { Color } from '@/core/Color';
-
+import { isSafeNumber } from '@/util/number';
 type Props = {
   settings: Settings;
 };
@@ -15,6 +15,7 @@ const props = defineProps<Props>();
 const emits = defineEmits<Emit>();
 
 const mode = ref<'dark'|'white'>(props.settings.mode);
+const color = ref(props.settings.myColor);
 const limit = ref(props.settings.taskLimit);
 const sortable = ref(String(props.settings.sortable));
 const topiccolor = ref(props.settings.topicColorFlag ? 'on' : 'off');
@@ -22,6 +23,7 @@ const topiccolor = ref(props.settings.topicColorFlag ? 'on' : 'off');
 const alignment = ref(props.settings.topicListType === 'list' ? 0 : 1);
 
 const interval = ref(props.settings.notificationIntervalSec);
+
 </script>
 
 <template>
@@ -33,23 +35,37 @@ const interval = ref(props.settings.notificationIntervalSec);
       </v-col>
     </v-row>
 
-    <v-row style="margin-top: 20px;">
+    <v-row class="subtitle">
+      <v-col cols="12">
+        <v-card-subtitle>Application</v-card-subtitle>
+        <v-divider></v-divider>
+      </v-col>
+      <v-col cols="12" class="body">
+
+        <v-row>
+          <v-col cols="2">Theme</v-col>
+          <v-col>
+            <radio-buttons v-model="mode" :labels="['while', 'dark']" inline />
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="2">Color</v-col>
+          <v-col>
+            <v-color-picker v-model="color" hide-inputs show-swatches ></v-color-picker>
+          </v-col>
+        </v-row>
+
+      </v-col>
+    </v-row>
+
+
+    <v-row class="subtitle">
       <v-col cols="12">
         <v-card-subtitle>TODO List</v-card-subtitle>
         <v-divider></v-divider>
       </v-col>
-      <v-col cols="12">
-        <v-row>
-          <v-col cols="2">Theme</v-col>
-          <v-col>
-            <radio-buttons
-            v-model="mode"
-            :labels="['while', 'dark']"
-            inline
-            />
-          </v-col>
-        </v-row>
-
+      <v-col cols="12" class="body">
         <v-row>
           <v-col cols="2">Get Limit</v-col>
           <v-col><v-text-field v-model="limit" /></v-col>
@@ -67,12 +83,13 @@ const interval = ref(props.settings.notificationIntervalSec);
       </v-col>
     </v-row>
 
-    <v-row style="margin-top: 20px;">
+
+    <v-row class="subtitle">
       <v-col cols="12">
         <v-card-subtitle>Topic Editor</v-card-subtitle>
         <v-divider></v-divider>
       </v-col>
-      <v-col cols="12">
+      <v-col cols="12" class="body">
         <v-row>
           <v-col cols="2">List Type</v-col>
           <v-col>
@@ -95,32 +112,31 @@ const interval = ref(props.settings.notificationIntervalSec);
       </v-col>
     </v-row>
 
-    <v-row style="margin-top: 20px;">
+
+    <v-row class="subtitle">
       <v-col cols="12">
         <v-card-subtitle>Notification</v-card-subtitle>
         <v-divider></v-divider>
       </v-col>
-      <v-col cols="12">
-
+      <v-col cols="12" class="body">
         <v-row>
           <v-col cols="2">Notification Interval (sec: min30s)</v-col>
           <v-col><v-text-field
             :model-value="interval"
-            @update:model-value="interval = Math.max(30, Number($event))"
+            @update:model-value="interval = isSafeNumber($event) ? Math.max(30, Number($event)) : 30"
           /></v-col>
         </v-row>
-
       </v-col>
     </v-row>
 
-    <div class="text-end">
+
       <v-btn
-        class=""
+        class="submit-area"
         :color="Color.SUCCESS"
         style="margin-top: 50px;"
         @click="emits(
           'submit',
-          {
+          <Settings>{
             ...settings,
             mode                    : mode,
             sortable                : sortable === 'true',
@@ -128,11 +144,29 @@ const interval = ref(props.settings.notificationIntervalSec);
             topicListType           : alignment === 0 ? 'list' : 'icon',
             taskLimit               : Number(limit),
             notificationIntervalSec : interval,
+            myColor                 : color,
           },
         )"
       >
         Submit
       </v-btn>
-    </div>
   </form>
 </template>
+
+<style scoped>
+.subtitle {
+  margin-top: 50px;
+}
+.body {
+  font-size: 15px;
+}
+
+.submit-area {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+}
+</style>

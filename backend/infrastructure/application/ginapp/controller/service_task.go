@@ -5,6 +5,13 @@ import (
 	"github.com/fcfcqloow/first-todo-list/backend/infrastructure/application/ginapp/model"
 )
 
+func domainTasks(feTask []model.Task) []domain.Task {
+	result := []domain.Task{}
+	for _, v := range feTask {
+		result = append(result, domainTask(v))
+	}
+	return result
+}
 func domainTask(feTask model.Task) domain.Task {
 	return domain.Task{
 		Id:          feTask.Id,

@@ -23,10 +23,10 @@ func NewTodoRepository(
 	return instance
 }
 
-func (d *dummyTodoRepository) List() (*domain.Tasks, error) {
+func (d *dummyTodoRepository) ListTasks() (*domain.Tasks, error) {
 	return d.getData()
 }
 
-func (d *dummyTodoRepository) Sync(tasks domain.Tasks) error {
+func (d *dummyTodoRepository) SyncTasks(tasks domain.Tasks) error {
 	return d.saveData(tasks)
 }

@@ -23,21 +23,20 @@ func main() {
 
 	log.Info(log.GetLevel())
 
-	todoRepo := ldb.NewTodoRepository(ldb.TodoDbFile)
-	topicRepo := ldb.NewTopicRepository(ldb.TopicDbFile)
-	settingsRepo := ldb.NewSettingsRepository(ldb.SettingDbFile)
-	logRepo := ldb.NewLogRepository()
+	localRepository := ldb.NewLocalRepository()
 
-	todoUseCase := usecase.NewTodoUseCase(todoRepo)
-	topicUseCase := usecase.NewTopicUseCase(topicRepo, todoRepo)
-	settingsUseCase := usecase.NewSettingsUseCase(settingsRepo)
-	logUseCase := usecase.NewLogUseCase(logRepo)
+	todoUseCase := usecase.NewTodoUseCase(localRepository, localRepository)
+	topicUseCase := usecase.NewTopicUseCase(localRepository, localRepository)
+	settingsUseCase := usecase.NewSettingsUseCase(localRepository)
+	logUseCase := usecase.NewLogUseCase(localRepository)
+	memoUseCase := usecase.NewMemoUseCase(localRepository)
 
 	ginapp.Run(
 		todoUseCase,
 		topicUseCase,
 		settingsUseCase,
 		logUseCase,
+		memoUseCase,
 		ldb.StaticDir,
 		cnv.SafeInt(os.Getenv("PORT"), 8080),
 	)

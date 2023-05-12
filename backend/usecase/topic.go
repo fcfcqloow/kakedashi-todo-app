@@ -29,7 +29,7 @@ func NewTopicUseCase(topicRepository TopicRepository, todoRepository TodoReposit
 }
 
 func (t *topicUseCase) ListTopics() ([]domain.Topic, error) {
-	result, err := t.topicRepository.List()
+	result, err := t.topicRepository.ListTopics()
 	if err != nil {
 		return nil, fmt.Errorf("[topic usecase] failed to list topics: %w", err)
 	}
@@ -38,7 +38,7 @@ func (t *topicUseCase) ListTopics() ([]domain.Topic, error) {
 }
 
 func (t *topicUseCase) GetTopic(id string) (*domain.Topic, error) {
-	topics, err := t.topicRepository.List()
+	topics, err := t.topicRepository.ListTopics()
 	if err != nil {
 		return nil, fmt.Errorf("[topic usecase] failed to get topic: %w", err)
 	}
@@ -60,7 +60,7 @@ func (t *topicUseCase) AddTopic(topic domain.Topic) ([]domain.Topic, error) {
 
 	topics = append(topics, topic)
 
-	if err := t.topicRepository.Sync(topics); err != nil {
+	if err := t.topicRepository.SyncTopics(topics); err != nil {
 		return nil, fmt.Errorf("[topic usecase] failed to add topics: %w", err)
 	}
 
@@ -74,18 +74,18 @@ func (t *topicUseCase) RemoveTopic(topic domain.Topic) ([]domain.Topic, error) {
 		return nil, fmt.Errorf("[topic usecase] failed to remove topics: %w", err)
 	}
 
-	if tasks, err := t.todoRepository.List(); err != nil {
+	if tasks, err := t.todoRepository.ListTasks(); err != nil {
 		log.Warn(err)
 	} else if err := tasks.ClearTopic(topic.Id); err != nil {
 		log.Warn(err)
-	} else if err := t.todoRepository.Sync(*tasks); err != nil {
+	} else if err := t.todoRepository.SyncTasks(*tasks); err != nil {
 		log.Warn(err)
 	}
 
 	for i, v := range topics {
 		if v.Id == topic.Id {
 			topics = append(topics[:i], topics[i+1:]...)
-			if err := t.topicRepository.Sync(topics); err != nil {
+			if err := t.topicRepository.SyncTopics(topics); err != nil {
 				return nil, fmt.Errorf("[topic usecase] failed to remove topics: %w", err)
 			}
 
@@ -105,7 +105,7 @@ func (t *topicUseCase) UpdateTopic(topic domain.Topic) ([]domain.Topic, error) {
 	for i, v := range topics {
 		if v.Id == topic.Id {
 			topics[i] = topic
-			if err := t.topicRepository.Sync(topics); err != nil {
+			if err := t.topicRepository.SyncTopics(topics); err != nil {
 				return nil, fmt.Errorf("[topic usecase] failed to update topics: %w", err)
 			}
 
