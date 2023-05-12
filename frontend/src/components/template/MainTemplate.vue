@@ -23,8 +23,8 @@ const { settings } = useAppStore();
       <v-list nav>
         <v-list-item prepend-icon="mdi-home" title="Todo List" value="TodoList" @click="$router.push('/')" />
         <v-list-item disabled prepend-icon="mdi-view-dashboard" title="Dashboard" value="Dashboard" @click="" />
-        <v-list-item prepend-icon="mdi-message" title="Topic Editor" value="TopicEditor" @click="$router.push('/topic/editor')" />
         <v-list-item prepend-icon="mdi-monitor-dashboard" title="Summary" value="Summary" @click="$router.push('/summary')" />
+        <v-list-item prepend-icon="mdi-message" title="Topic Editor" value="TopicEditor" @click="$router.push('/topic/editor')" />
         <v-list-item prepend-icon="mdi-console" title="Log Monitor" value="Log" @click="$router.push('/log')" />
         <v-list-item prepend-icon="mdi-backup-restore" title="Backup" value="Backup" @click="$router.push('/restore')" />
         <v-list-item prepend-icon="mdi-cog" title="Settings" value="Settings" @click="$router.push('/settings')" />

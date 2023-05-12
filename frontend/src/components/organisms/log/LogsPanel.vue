@@ -9,11 +9,10 @@ type Emit = {
 
 const props = defineProps<Props>();
 const emits = defineEmits<Emit>();
-const log = console.log
 </script>
 <template>
   <v-expansion-panel>
-    <v-expansion-panel-title @click="log('click')">
+    <v-expansion-panel-title>
       <template v-slot:default="{ expanded }">
         {{ props.date }}
       </template>
